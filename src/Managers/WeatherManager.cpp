@@ -164,7 +164,6 @@ float WeatherManager::getMoonPhase(uint8_t year, uint8_t month, uint8_t day, uin
 }
 
 void WeatherManager::loadOpenMeteoData(String units, String lat, String lon) {
-
 	String unit = units == String("metric") ? "celsius" : "fahrenheit";
 	currentWeatherData.isMetric = units == String("metric");
 

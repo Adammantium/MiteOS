@@ -109,7 +109,7 @@ void WeatherPage::drawWeather() {
 
 void WeatherPage::drawWeatherDayLine() {
 	mDisplay.setFont(&FreeSans6pt7b);
-
+	
 	drawCentreString(TXT_TEMPERATURE, DISPLAY_WIDTH / 2, 15, false);
 
 	uint8_t x_offset = 20;

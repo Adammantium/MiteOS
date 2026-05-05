@@ -3,6 +3,7 @@
 
 #include "Watchfaces/Watchface.h"
 #include "Watchfaces/MiteoWatchface.h"
+#include "Watchfaces/BinaryHurricaneWatchface.h"
 #include "Watchfaces/SEG7Watchface.h"
 #include "Watchfaces/BTTFWatchface.h"
 #include "Watchfaces/PokemonWatchface.h"
@@ -20,6 +21,7 @@ RTC_DATA_ATTR uint8_t actionTopLeft = GLOBAL_PAGE_SETTINGS;
 RTC_DATA_ATTR uint8_t actionTopRight = GLOBAL_PAGE_NOTIFICATIONS;
 
 PROGMEM MiteoWatchface miteoWatchface;
+PROGMEM BinaryHurricaneWatchface binaryHurricaneWatchface;
 PROGMEM SEG7Watchface seg7Watchface;
 PROGMEM BTTFWatchface bttfWatchface;
 PROGMEM PokemonWatchface pokemonWatchface;
@@ -33,6 +35,7 @@ PROGMEM TetrisWatchface tetrisWatchface;
 PROGMEM StarryHorizonWatchface starryHorizonWatchface;
 PROGMEM Watchface* watchfaces[] = {
 	&miteoWatchface,
+	&binaryHurricaneWatchface,
 	&seg7Watchface,
 	&bttfWatchface,
 	&pokemonWatchface,

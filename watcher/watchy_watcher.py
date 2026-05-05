@@ -85,10 +85,10 @@ ser = serial.Serial(serial_ports()[0], baudrate = 921600)
 sio = io.TextIOWrapper(io.BufferedRWPair(ser, ser))
 
 
-ser.setDTR(False)
-time.sleep(1)
-ser.flushInput()
-ser.setDTR(True)
+#ser.setDTR(False)
+#time.sleep(1)
+#ser.flushInput()
+#ser.setDTR(True)
 
 print("Waiting...")
 seq = []
