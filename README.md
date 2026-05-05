@@ -87,6 +87,8 @@ BuiltIn Watchfaces
 -----
 | Watchface | Creator | Based on |
 |-----------|---------|----------|
+| [**Miteo**](#miteo) | [Adammantium](https://github.com/Adammantium) | Casio Watch Design |
+| [**Binary Hurricane**](#binary-hurricane) | [Adammantium](https://github.com/Adammantium) |
 | [**7_SEG**](https://github.com/sqfmi/Watchy/tree/master/examples/WatchFaces/7_SEG) | [SQFMI](https://github.com/sqfmi) |
 | [**BTTF**](https://github.com/peerdavid/wos) | [peerdavid](https://github.com/peerdavid) |
 | [**Pokemon 2.0**](https://git.klemek.fr/klemek/watchy/src/branch/master/watchfaces/pokemon-2.0) | [Klemek](https://git.klemek.fr/klemek/) |
@@ -104,4 +106,12 @@ If you are the author of any of these watchfaces and don't want me to distribute
 
 Screenshots
 -----
-<img src="img/miteo.jpg"  width="120" height="120"> <img src="img/miteo_darkmode.jpg"  width="120" height="120"> <img src="img/default_watchface.jpg"  width="120" height="120"> <img src="img/pokemon_watchface.jpg"  width="120" height="120"> <img src="img/step_tracker.jpg"  width="120" height="120"> <img src="img/step_history.jpg"  width="120" height="120"> <img src="img/weather.jpg"  width="120" height="120"> <img src="img/forecast.jpg"  width="120" height="120"> <img src="img/moon.jpg"  width="120" height="120"> <img src="img/alarms.jpg"  width="120" height="120"> <img src="img/app_page.jpg"  width="120" height="120"> <img src="img/hass.jpg"  width="120" height="120"> <img src="img/timer.jpg"  width="120" height="120"> <img src="img/calendar.jpg"  width="120" height="120"> <img src="img/appointments.jpg"  width="120" height="120"> <img src="img/playback_info.jpg"  width="120" height="120"> <img src="img/totp.jpg"  width="120" height="120"> <img src="img/wooly.jpg"  width="120" height="120">
+#### Custom Watchfaces
+##### Miteo
+<img src="img/miteo.jpg"  width="120" height="120"> <img src="img/miteo_darkmode.jpg"  width="120" height="120">  
+##### Binary Hurricane
+<img src="img/binary_hurricane.jpg"  width="120" height="120"> <img src="img/binary_hurricane_darkmode.jpg"  width="120" height="120">  
+#### Some Included Watchfaces
+<img src="img/default_watchface.jpg"  width="120" height="120"> <img src="img/pokemon_watchface.jpg"  width="120" height="120">  
+#### Other Apps
+<img src="img/step_tracker.jpg"  width="120" height="120"> <img src="img/step_history.jpg"  width="120" height="120"> <img src="img/weather.jpg"  width="120" height="120"> <img src="img/forecast.jpg"  width="120" height="120"> <img src="img/moon.jpg"  width="120" height="120"> <img src="img/alarms.jpg"  width="120" height="120"> <img src="img/app_page.jpg"  width="120" height="120"> <img src="img/hass.jpg"  width="120" height="120"> <img src="img/timer.jpg"  width="120" height="120"> <img src="img/calendar.jpg"  width="120" height="120"> <img src="img/appointments.jpg"  width="120" height="120"> <img src="img/playback_info.jpg"  width="120" height="120"> <img src="img/totp.jpg"  width="120" height="120"> <img src="img/wooly.jpg"  width="120" height="120">
