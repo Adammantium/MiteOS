@@ -1,5 +1,5 @@
 //Network Settings
-#define PROXY_WEB_REQUESTS_THROUGH_PHONE false
+#define PROXY_WEB_REQUESTS_THROUGH_PHONE true
 
 //Weather Settings
 #define OPENWEATHERMAP_URL "http://api.openweathermap.org/data/2.5/weather?id={cityID}&lang={lang}&units={units}&appid={apiKey}" //open weather api using city ID
