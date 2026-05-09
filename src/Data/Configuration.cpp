@@ -98,7 +98,9 @@ void Configuration::saveBluetooth() {
 	if(btDeviceRegistered) {
 		preferences.putString("btLastDevice", btLastDevice.toString().c_str());
 	}else{
-		preferences.remove("btLastDevice");
+		if(preferences.isKey("btLastDevice")) {
+			preferences.remove("btLastDevice");
+		}
 	}
 	
 	printDebug("Saved Bluetooth");
@@ -110,7 +112,7 @@ void Configuration::loadBluetooth() {
 	String deviceId = preferences.getString("btLastDevice", "0");
 	if(deviceId.length() > 5) {
 		btDeviceRegistered = true;
-		btLastDevice = BLEAddress(deviceId.c_str());
+		btLastDevice = BLEAddress(std::string(deviceId.c_str()), (uint8_t) 0);
 	}
 	
 	printDebug(btDeviceRegistered);

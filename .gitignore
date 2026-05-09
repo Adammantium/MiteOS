@@ -7,3 +7,7 @@ build/
 .vscode/
 watcher/buf.png
 watcher/buf*.png
+
+dependencies.lock
+managed_components
+sdkconfig.*.old

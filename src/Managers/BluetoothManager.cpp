@@ -1,6 +1,5 @@
 #include "BluetoothManager.h"
 #include "../MiteOS.h"
-#include <BLE2902.h>
 #include "../Images/menu_icons.h"
 
 BLECharacteristic *BluetoothManager::commandCharacteristic;
@@ -15,21 +14,21 @@ String BluetoothManager::lastResponse;
 char BluetoothManager::tmp_buffer[500];
 
 RTC_DATA_ATTR bool btDeviceRegistered(false);
-RTC_DATA_ATTR BLEAddress btLastDevice("0");
+RTC_DATA_ATTR BLEAddress btLastDevice(std::string("0"), 0);
 
 class cb : public BLEServerCallbacks {
-	void onConnect(BLEServer *pServer) {
+	void onConnect(NimBLEServer* pServer, NimBLEConnInfo& connInfo) override {
 		BluetoothManager::connected = true;	
 		printDebug("BLE Device Connected");
 	}
-	void onDisconnect(BLEServer *pServer) {
+	void onDisconnect(NimBLEServer* pServer, NimBLEConnInfo& connInfo, int reason) override {
 		BluetoothManager::connected = false;
 		printDebug("BLE Device Disconnected");
 	}
 };
 
 class ccb : public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
+    void onWrite(NimBLECharacteristic* pCharacteristic, NimBLEConnInfo& connInfo) override {
 		String rxValue = String(pCharacteristic->getValue().c_str());
 		
 		if (rxValue.length() > 0) {
@@ -47,22 +46,36 @@ class ccb : public BLECharacteristicCallbacks {
 };
 
 
-static void my_gap_event_handler(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t* param) {
-	switch(event) {
-		case ESP_GAP_BLE_AUTH_CMPL_EVT: {
-			BLEAddress address = BLEAddress(param->ble_security.auth_cmpl.bd_addr);
-			BLEDevice::whiteListAdd(address);
-			
-			btLastDevice = address;
-			btDeviceRegistered = true;
-			
-			#ifdef DEBUG
-			Serial.print("Bonded with ");
-			Serial.println(address.toString().c_str());
-			#endif
-			break;
-		}
-	}
+static int my_gap_event_handler(ble_gap_event *event, void *param) {
+    switch (event->type) {
+        case BLE_GAP_EVENT_ENC_CHANGE: {
+			printDebug("Encryption state changed");
+            // Check if encryption/pairing was successful
+            if (event->enc_change.status == 0) {
+				printDebug("Pairing was successful");
+                // Get connection info to find the peer address
+                struct ble_gap_conn_desc desc;
+                if (ble_gap_conn_find(event->enc_change.conn_handle, &desc) == 0) {
+                    NimBLEAddress address = NimBLEAddress(desc.peer_id_addr);
+                    
+                    // Add to whitelist
+                    NimBLEDevice::whiteListAdd(address);
+                    
+                    btLastDevice = address;
+                    btDeviceRegistered = true;
+                    
+                    #ifdef DEBUG
+                    Serial.print("Bonded with ");
+                    Serial.println(address.toString().c_str());
+                    #endif
+                }
+            }else{
+				printDebug("Pairing failed");
+			}
+            break;
+        }
+    }
+	return 0;
 }
 
 /* BLE interfacing functions
@@ -74,18 +87,13 @@ void BluetoothManager::init() {
 	
 	printDebug("Initializing BT Device");
 	BLEDevice::init("Mite");
-	esp_err_t err = esp_ble_gatt_set_local_mtu(MTU_SIZE);
+	BLEDevice::setMTU(MTU_SIZE);
+	BLEDevice::setSecurityAuth(false, false, true);
+
 	pServer = BLEDevice::createServer();
 	
 	// add server callback so we can detect when we're connected.
 	pServer->setCallbacks(new cb());
-	
-	// Security: device requires bonding
-	BLESecurity* security = new BLESecurity();
-	//security->setStaticPIN(1234);
-	security->setAuthenticationMode(ESP_LE_AUTH_BOND);
-	//security->setCapability(ESP_IO_CAP_NONE);
-	//security->setInitEncryptionKey(ESP_BLE_ENC_KEY_MASK | ESP_BLE_ID_KEY_MASK);
 	
 	initialized = true;
 }
@@ -94,7 +102,7 @@ void BluetoothManager::unbondDevice() {
 	printDebug("Unbonding current device...");
 	
 	btDeviceRegistered = false;
-	btLastDevice = BLEAddress("0");
+	btLastDevice = BLEAddress(std::string("0"), 0);
 	
 	Configuration::saveBluetooth();
 }
@@ -106,6 +114,7 @@ void BluetoothManager::bondDevice() {
 	
 	printDebug("Waiting for Device to bond...");
 	
+	BLEDevice::setSecurityAuth(true, false, true);
 	pServer->getAdvertising()->setScanFilter(false, false);
 
 	BLEDevice::setCustomGapHandler(my_gap_event_handler);
@@ -116,7 +125,11 @@ void BluetoothManager::bondDevice() {
 	while(!btDeviceRegistered && wait < 300) { // Wait for bonding or half a minute, whatever comes first
 		delay(100);
 		wait++;
-		if(pServer->getConnectedCount() > 0) break; // Device connected instead of bonding, probably already bonded?
+		if(pServer->getConnectedCount() > 0) {
+			btDeviceRegistered = true;
+			btLastDevice = pServer->getPeerInfoByHandle(0).getIdAddress();
+			break; // Device connected instead of bonding, probably already bonded?
+		}
 	}
 	
 	connected = pServer->getConnectedCount() > 0;
@@ -140,13 +153,12 @@ void BluetoothManager::connectDevice() {
 	// define the characteristics and how they can be used
 	notificationUpdateCharacteristic = pService->createCharacteristic(
 		CHARACTERISTIC_UUID_TX,
-		BLECharacteristic::PROPERTY_NOTIFY | BLECharacteristic::PROPERTY_READ
+		NIMBLE_PROPERTY::NOTIFY | NIMBLE_PROPERTY::READ
 	);
-	notificationUpdateCharacteristic->addDescriptor(new BLE2902());
 	
 	commandCharacteristic = pService->createCharacteristic(
 		CHARACTERISTIC_UUID_RX,
-		BLECharacteristic::PROPERTY_WRITE | BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_BROADCAST
+		NIMBLE_PROPERTY::WRITE | NIMBLE_PROPERTY::READ | NIMBLE_PROPERTY::BROADCAST | NIMBLE_PROPERTY::NOTIFY | NIMBLE_PROPERTY::WRITE_NR
 	);
 	commandCharacteristic->setCallbacks(new ccb());
 	

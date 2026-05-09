@@ -32,7 +32,7 @@
 #define KM_TO_MILES 0.621371
 
 
-#define ALARM_COUNT 6
+#define ALARM_COUNT 3
 
 
 // This will dramatically reduce battery life and responsiveness of the watch

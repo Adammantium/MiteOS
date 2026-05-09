@@ -167,11 +167,14 @@ void WeatherManager::loadOpenMeteoData(String units, String lat, String lon) {
 	String unit = units == String("metric") ? "celsius" : "fahrenheit";
 	currentWeatherData.isMetric = units == String("metric");
 
-	if((NOW - lastWeatherDownload) / 60 > WEATHER_DOWNLOAD_INTERVAL && lat.length() > 0 && lon.length() > 0) {
+	#if PROXY_WEB_REQUESTS_THROUGH_PHONE
+	if(!PhoneConnectionManager::GetGPSPosition())
+		return;
+	#endif
+	
+	if(lat.length() > 0 && lon.length() > 0) {
 		lastWeatherDownload = NOW;
 
-		if(!PhoneConnectionManager::GetGPSPosition())
-			return;
 
 		String weatherQueryURL = OPENMETEO_URL;
 		weatherQueryURL.replace("{lat}", lat);

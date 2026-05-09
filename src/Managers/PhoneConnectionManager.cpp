@@ -278,10 +278,8 @@ bool PhoneConnectionManager::SyncCalendar() {
 			printDebug(json["events"].size());
 			if(json["events"].size() > 0) {
 				for(uint16_t i = 0; i < json["events"].size(); i++) {
-					printDebug(String(json["events"][i]));
-
-					String id = String(json["events"][i]["startTime"]) + "_" + String((int) json["events"][i]["id"]);
-
+					String id = json["events"][i]["startTime"].as<String>() + "_" + String(json["events"][i]["id"].as<int>());
+					
 					FileManager::writeFile(String(PATH_CALENDAR) + id, json["events"][i]);
 				}
 			}
